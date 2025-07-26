@@ -52,20 +52,20 @@ public class BankApplication {
 
 	// Create a checking account
 	private static void createCheckingAccount() {
-		System.out.print("Account number : ");
-		String number = scanner.nextLine();
-		System.out.print("Holder's name : ");
-		String holder = scanner.nextLine();
-		System.out.print("Initial balance : ");
-		double balance = Double.parseDouble(scanner.nextLine());
+		BankAccount checkingAccount = createAccount("checking");
 
-		BankAccount checkingAccount = new CheckingAccount(number, holder, balance);
-
-		logger.info("Checking account number {} created successfully", number);
+		logger.info("Checking account number {} created successfully", checkingAccount.getAccountNumber());
 	}
 
 	// Create a savings account
 	private static void createSavingsAccount() {
+		BankAccount savingAccount = createAccount("savings");
+
+		logger.info("Savings account number {} created successfully", savingAccount.getAccountNumber());
+	}
+
+	// Create account depending on the option chosen by the user
+	private static BankAccount createAccount(String type) {
 		System.out.print("Account number : ");
 		String number = scanner.nextLine();
 		System.out.print("Holder's name : ");
@@ -73,8 +73,12 @@ public class BankApplication {
 		System.out.print("Initial balance : ");
 		double balance = Double.parseDouble(scanner.nextLine());
 
-		BankAccount savingAccount = new SavingsAccount(number, holder, balance);
+		BankAccount account = switch (type) {
+			case "checking" -> new CheckingAccount(number, holder, balance);
+			case "savings" -> new SavingsAccount(number, holder, balance);
+			default -> throw new IllegalStateException("unknown type");
+		};
 
-		logger.info("Saving account number {} created successfully", number);
+		return account;
 	}
 }
