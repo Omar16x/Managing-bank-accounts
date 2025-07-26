@@ -6,6 +6,7 @@ import java.util.*;
 import com.bank.accounts.BankAccount;
 import com.bank.accounts.CheckingAccount;
 import com.bank.accounts.SavingsAccount;
+import com.bank.utils.BankAccountUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,6 +43,8 @@ public class BankApplication {
 					case "2" -> createSavingsAccount();
 					case "3" -> performOperation(true);
 					case "4" -> performOperation(false);
+					case "5" -> calculateInterests();
+					case "6" -> checkBalance();
 					case "7" -> {
 						logger.info("Quitting the application.");
 						return;
@@ -102,4 +105,22 @@ public class BankApplication {
 		if (isDeposit) account.deposit(amount);
 		else account.withdraw(amount);
 	}
+
+
+	private static void calculateInterests() {
+		accounts.values().stream()
+				.filter(bankAccount -> bankAccount instanceof SavingsAccount)
+				.forEach(BankAccount::calculateInterest);
+	}
+
+	private static void checkBalance() {
+		System.out.print("Number account : ");
+		String number = scanner.nextLine();
+		BankAccount account = accounts.get(number);
+		if (account != null) {
+			System.out.printf("Current balance : %.2f%n", account.getBalance());
+		} else {
+			logger.warn("Account not found : {}", number);
+		}
+	};
 }

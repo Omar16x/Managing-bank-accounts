@@ -1,6 +1,7 @@
 package com.bank.accounts;
 
 
+import com.bank.utils.BankAccountUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,6 +47,7 @@ public final class SavingsAccount extends BankAccount {
     public void calculateInterest() {
         double interest = balance * INTEREST_RATE;
         balance += interest;
+        BankAccountUtils.displayCalculationDetails(this, interest);
         logger.info("Interest of {} added to the account number {}", interest, accountNumber);
     }
 }
