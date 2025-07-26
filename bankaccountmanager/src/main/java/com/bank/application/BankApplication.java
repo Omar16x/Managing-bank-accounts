@@ -5,6 +5,7 @@ import java.util.*;
 
 import com.bank.accounts.BankAccount;
 import com.bank.accounts.CheckingAccount;
+import com.bank.accounts.SavingsAccount;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,6 +37,7 @@ public class BankApplication {
 			try {
 				switch (choice) {
 					case "1" -> createCheckingAccount();
+					case "2" -> createSavingsAccount();
 					case "7" -> {
 						logger.info("Quitting the application.");
 						return;
@@ -60,5 +62,19 @@ public class BankApplication {
 		BankAccount checkingAccount = new CheckingAccount(number, holder, balance);
 
 		logger.info("Checking account number {} created successfully", number);
+	}
+
+	// Create a savings account
+	private static void createSavingsAccount() {
+		System.out.print("Account number : ");
+		String number = scanner.nextLine();
+		System.out.print("Holder's name : ");
+		String holder = scanner.nextLine();
+		System.out.print("Initial balance : ");
+		double balance = Double.parseDouble(scanner.nextLine());
+
+		BankAccount savingAccount = new SavingsAccount(number, holder, balance);
+
+		logger.info("Saving account number {} created successfully", number);
 	}
 }
