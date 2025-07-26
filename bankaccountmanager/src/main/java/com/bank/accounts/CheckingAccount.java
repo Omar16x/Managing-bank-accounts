@@ -39,7 +39,7 @@ public final class CheckingAccount extends BankAccount {
             return;
         }
         balance -= amount;
-        logger.info("Withdraw of {} from the checking account number {}", amount, accountNumber);
+        logger.info("Withdrawal of {} from the checking account number {}", amount, accountNumber);
     }
 
     @Override
