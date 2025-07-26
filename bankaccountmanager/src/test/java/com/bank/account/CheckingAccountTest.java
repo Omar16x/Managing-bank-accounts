@@ -1,45 +1,71 @@
 package com.bank.account;
 
-import com.bank.accounts.BankAccount;
+
 import com.bank.accounts.CheckingAccount;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class CheckingAccountTest {
+
+    private CheckingAccount checkingAccount;
+
+    @BeforeEach
+    void setUp() {
+        checkingAccount = new CheckingAccount("1", "Omar", 1000);
+    }
+
     @Test
     void depositValidAmount() {
-        BankAccount account = new CheckingAccount("1", "Omar", 50);
-        account.deposit(50);
-        assertEquals(100, account.getBalance());
+        checkingAccount.deposit(50);
+        assertEquals(1050, checkingAccount.getBalance());
     }
 
     @Test
     void depositNegativeAmount() {
-        BankAccount account = new CheckingAccount("1", "Omar", 100);
-        account.deposit(-20);
-        assertEquals(100, account.getBalance());
+        checkingAccount.deposit(-20);
+        assertEquals(1000, checkingAccount.getBalance());
     }
 
     @Test
     void withdrawValidAmount() {
-        BankAccount account = new CheckingAccount("2", "holder", 150);
-        account.withdraw(50);
-        assertEquals(100, account.getBalance());
+        checkingAccount.withdraw(50);
+        assertEquals(950, checkingAccount.getBalance());
     }
 
     @Test
     void withdrawExceedingAmount() {
-        BankAccount account = new CheckingAccount("2", "holder", 100);
-        account.withdraw(200);
-        assertEquals(100, account.getBalance());
+        checkingAccount.withdraw(1200);
+        assertEquals(1000, checkingAccount.getBalance());
     }
 
     @Test
     void withdrawNegativeAmount() {
-        BankAccount account = new CheckingAccount("3", "holder", 100);
-        account.withdraw(-30);
-        assertEquals(100, account.getBalance());
+        checkingAccount.withdraw(-30);
+        assertEquals(1000, checkingAccount.getBalance());
+    }
+
+    @Test
+    void withdrawAllThenDeposit() {
+        checkingAccount.withdraw(1000);
+        checkingAccount.deposit(300);
+        assertEquals(300, checkingAccount.getBalance());
+    }
+
+    @Test
+    void multipleDepositsAndWithdrawals() {
+        checkingAccount.deposit(1200);
+        checkingAccount.withdraw(1000);
+        checkingAccount.deposit(300);
+        checkingAccount.withdraw(400);
+        assertEquals(1100, checkingAccount.getBalance());
+    }
+
+    @Test
+    void calculateInterests() {
+        double oldBalance = checkingAccount.getBalance();
+        checkingAccount.calculateInterest();
+        assertEquals(oldBalance, checkingAccount.getBalance());
     }
 }
