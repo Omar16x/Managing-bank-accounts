@@ -16,6 +16,8 @@ import org.apache.logging.log4j.Logger;
 public class BankApplication {
 	private static final Logger logger = LogManager.getLogger(BankApplication.class);
 	private static final Scanner scanner = new Scanner(System.in);
+	private static final Map<String, BankAccount> accounts = new HashMap<>();
+
 
 
 	public static void main(String[] args) {
@@ -38,6 +40,8 @@ public class BankApplication {
 				switch (choice) {
 					case "1" -> createCheckingAccount();
 					case "2" -> createSavingsAccount();
+					case "3" -> performOperation(true);
+					case "4" -> performOperation(false);
 					case "7" -> {
 						logger.info("Quitting the application.");
 						return;
@@ -53,14 +57,14 @@ public class BankApplication {
 	// Create a checking account
 	private static void createCheckingAccount() {
 		BankAccount checkingAccount = createAccount("checking");
-
+		accounts.put(checkingAccount.getAccountNumber(),checkingAccount);
 		logger.info("Checking account number {} created successfully", checkingAccount.getAccountNumber());
 	}
 
 	// Create a savings account
 	private static void createSavingsAccount() {
 		BankAccount savingAccount = createAccount("savings");
-
+		accounts.put(savingAccount.getAccountNumber(),savingAccount);
 		logger.info("Savings account number {} created successfully", savingAccount.getAccountNumber());
 	}
 
@@ -80,5 +84,22 @@ public class BankApplication {
 		};
 
 		return account;
+	}
+
+	// Perform a deposit or a withdrawal
+	private static void performOperation(boolean isDeposit) {
+		System.out.print("Account number : ");
+		String number = scanner.nextLine();
+		BankAccount account = accounts.get(number);
+		if (account == null) {
+			logger.warn("Account not found : {}", number);
+			return;
+		}
+
+		System.out.print("Amount : ");
+		double amount = Double.parseDouble(scanner.nextLine());
+
+		if (isDeposit) account.deposit(amount);
+		else account.withdraw(amount);
 	}
 }
