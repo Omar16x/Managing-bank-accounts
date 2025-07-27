@@ -59,4 +59,9 @@ public abstract class BankAccount {
     public String getAccountHolder() {
         return accountHolder;
     }
+
+    @Override
+    public String toString(){
+        return "Account number : " + this.accountNumber + " | Holder's name : " + this.accountHolder + " | Balance : " + this.balance + "\n";
+    }
 }
