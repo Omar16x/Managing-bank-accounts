@@ -1,10 +1,12 @@
 package com.bank.accounts;
 
 
+import com.bank.exceptions.BankOperationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CheckingAccountTest {
 
@@ -12,7 +14,7 @@ public class CheckingAccountTest {
 
     @BeforeEach
     void setUp() {
-        checkingAccount = new CheckingAccount("1", "Omar", 1000);
+        checkingAccount = new CheckingAccount(1L, "Omar", 1000);
     }
 
     @Test
@@ -22,8 +24,14 @@ public class CheckingAccountTest {
     }
 
     @Test
+    void depositZeroAmount() {
+        assertThrows(BankOperationException.class, () -> checkingAccount.deposit(0));
+        assertEquals(1000, checkingAccount.getBalance());
+    }
+
+    @Test
     void depositNegativeAmount() {
-        checkingAccount.deposit(-20);
+        assertThrows(BankOperationException.class, () -> checkingAccount.withdraw(-20));
         assertEquals(1000, checkingAccount.getBalance());
     }
 
@@ -35,13 +43,13 @@ public class CheckingAccountTest {
 
     @Test
     void withdrawExceedingAmount() {
-        checkingAccount.withdraw(1200);
+        assertThrows(BankOperationException.class, () -> checkingAccount.withdraw(1200));
         assertEquals(1000, checkingAccount.getBalance());
     }
 
     @Test
     void withdrawNegativeAmount() {
-        checkingAccount.withdraw(-30);
+        assertThrows(BankOperationException.class, () -> checkingAccount.withdraw(-30));
         assertEquals(1000, checkingAccount.getBalance());
     }
 

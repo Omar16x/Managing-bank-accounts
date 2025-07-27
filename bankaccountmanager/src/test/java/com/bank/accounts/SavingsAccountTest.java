@@ -1,5 +1,6 @@
 package com.bank.accounts;
 
+import com.bank.exceptions.BankOperationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +11,7 @@ public class SavingsAccountTest {
 
     @BeforeEach
     void setUp() {
-        savingAccount = new SavingsAccount("1", "Omar", 1000);
+        savingAccount = new SavingsAccount(1L, "Omar", 1000);
     }
     @Test
     void depositValidAmount() {
@@ -20,7 +21,13 @@ public class SavingsAccountTest {
 
     @Test
     void depositZeroAmount() {
-        savingAccount.deposit(0);
+        assertThrows(BankOperationException.class, () -> savingAccount.deposit(0));
+        assertEquals(1000, savingAccount.getBalance());
+    }
+
+    @Test
+    void depositNegativeAmount() {
+        assertThrows(BankOperationException.class, () -> savingAccount.withdraw(-20));
         assertEquals(1000, savingAccount.getBalance());
     }
 
@@ -32,7 +39,7 @@ public class SavingsAccountTest {
 
     @Test
     void withdrawExceedingAmount() {
-        savingAccount.withdraw(1500);
+        assertThrows(BankOperationException.class, () -> savingAccount.withdraw(1500));
         assertEquals(1000, savingAccount.getBalance());
     }
 

@@ -17,14 +17,14 @@ import org.apache.logging.log4j.Logger;
 public class BankApplication {
 	private static final Logger logger = LogManager.getLogger(BankApplication.class);
 	private static final Scanner scanner = new Scanner(System.in);
-	private static final Map<String, BankAccount> accounts = new HashMap<>();
+	private static final Map<Long, BankAccount> accounts = new HashMap<>();
 
 
 
 	public static void main(String[] args) {
 		while (true) {
 			System.out.println("""
- \n--- Menu Banque ---
+ \n--- Bank operations ---
  1. Create a new checking account
  2. Create a new savings account
  3. make a deposit
@@ -73,16 +73,35 @@ public class BankApplication {
 
 	// Create account depending on the option chosen by the user
 	private static BankAccount createAccount(String type) {
-		System.out.print("Account number : ");
-		String number = scanner.nextLine();
+		Long accountNumber = null;
+		Double initialBalance = null;
+
+		while(true) {
+			System.out.print("Account number : ");
+			try {
+				accountNumber = Long.parseLong(scanner.nextLine());
+				break;
+			} catch (NumberFormatException e) {
+				logger.error("Account number must number.");
+			}
+		}
+
 		System.out.print("Holder's name : ");
-		String holder = scanner.nextLine();
-		System.out.print("Initial balance : ");
-		double balance = Double.parseDouble(scanner.nextLine());
+		String holderName = scanner.nextLine();
+
+		while(true) {
+			System.out.print("Initial balance : ");
+			try {
+				initialBalance = Double.parseDouble(scanner.nextLine());
+				break;
+			} catch (NumberFormatException e) {
+				logger.error("Balance must a float.");
+			}
+		}
 
 		BankAccount account = switch (type) {
-			case "checking" -> new CheckingAccount(number, holder, balance);
-			case "savings" -> new SavingsAccount(number, holder, balance);
+			case "checking" -> new CheckingAccount(accountNumber, holderName, initialBalance);
+			case "savings" -> new SavingsAccount(accountNumber, holderName, initialBalance);
 			default -> throw new IllegalStateException("unknown type");
 		};
 
@@ -91,16 +110,34 @@ public class BankApplication {
 
 	// Perform a deposit or a withdrawal
 	private static void performOperation(boolean isDeposit) {
-		System.out.print("Account number : ");
-		String number = scanner.nextLine();
-		BankAccount account = accounts.get(number);
+		Long accountNumber = null;
+		Double amount = null;
+
+		while (true) {
+			System.out.print("Account number : ");
+			try {
+				accountNumber = Long.parseLong(scanner.nextLine());
+				break;
+			} catch (NumberFormatException e) {
+				logger.error("Account number must number.");
+			}
+		}
+
+		BankAccount account = accounts.get(accountNumber);
 		if (account == null) {
-			logger.warn("Account not found : {}", number);
+			logger.warn("Account not found : {}", accountNumber);
 			return;
 		}
 
-		System.out.print("Amount : ");
-		double amount = Double.parseDouble(scanner.nextLine());
+		while(true) {
+			System.out.print("Amount : ");
+			try {
+				amount = Double.parseDouble(scanner.nextLine());
+				break;
+			} catch (NumberFormatException e) {
+				logger.error("The amount must a float.");
+			}
+		}
 
 		if (isDeposit) account.deposit(amount);
 		else account.withdraw(amount);
@@ -108,19 +145,33 @@ public class BankApplication {
 
 
 	private static void calculateInterests() {
-		accounts.values().stream()
-				.filter(bankAccount -> bankAccount instanceof SavingsAccount)
-				.forEach(BankAccount::calculateInterest);
+		if (!accounts.isEmpty()) {
+			accounts.values().stream()
+					.filter(bankAccount -> bankAccount instanceof SavingsAccount)
+					.forEach(BankAccount::calculateInterest);
+		} else {
+			logger.info("No accounts found.");
+		}
 	}
 
 	private static void checkBalance() {
-		System.out.print("Number account : ");
-		String number = scanner.nextLine();
-		BankAccount account = accounts.get(number);
+		Long accountNumber = null;
+
+		while(true) {
+			System.out.print("Account number : ");
+			try {
+				accountNumber = Long.parseLong(scanner.nextLine());
+				break;
+			} catch (NumberFormatException e) {
+				logger.error("Account number must number.");
+			}
+		}
+
+		BankAccount account = accounts.get(accountNumber);
 		if (account != null) {
 			System.out.printf("Current balance : %.2f%n", account.getBalance());
 		} else {
-			logger.warn("Account not found : {}", number);
+			logger.warn("Account not found : {}", accountNumber);
 		}
 	};
 }

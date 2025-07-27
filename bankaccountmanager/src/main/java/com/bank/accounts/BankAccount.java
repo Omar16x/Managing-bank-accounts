@@ -4,7 +4,7 @@ package com.bank.accounts;
  * Abstract class representing a bank account.
  */
 public abstract class BankAccount {
-    protected final String accountNumber;
+    protected final Long accountNumber;
     protected final String accountHolder;
     protected double balance;
 
@@ -15,7 +15,7 @@ public abstract class BankAccount {
      * @param accountHolder the name of the account holder
      * @param balance       the initial balance of the account
      */
-    protected BankAccount(String accountNumber, String accountHolder, double balance) {
+    protected BankAccount(Long accountNumber, String accountHolder, double balance) {
         this.accountNumber = accountNumber;
         this.accountHolder = accountHolder;
         this.balance = balance;
@@ -47,7 +47,7 @@ public abstract class BankAccount {
      *
      * @return the account number
      */
-    public String getAccountNumber() {
+    public Long getAccountNumber() {
         return accountNumber;
     }
 

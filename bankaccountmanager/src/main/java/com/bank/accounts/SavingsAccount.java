@@ -1,6 +1,7 @@
 package com.bank.accounts;
 
 
+import com.bank.exceptions.BankOperationException;
 import com.bank.utils.BankAccountUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,15 +20,14 @@ public final class SavingsAccount extends BankAccount {
      * @param accountHolder the name of the account holder
      * @param balance       the initial balance of the account
      */
-    public SavingsAccount(String accountNumber, String accountHolder, double balance) {
+    public SavingsAccount(Long accountNumber, String accountHolder, double balance) {
         super(accountNumber, accountHolder, balance);
     }
 
     @Override
     public void deposit(double amount) {
-        if (amount <= 0) {
-            logger.warn("the amount should be positive.");
-            return;
+        if (amount <= 0.0) {
+            throw new BankOperationException("The amount should be positive number.");
         }
         balance += amount;
         logger.info("Deposit of {} into the account number {}", amount, accountNumber);
@@ -36,8 +36,7 @@ public final class SavingsAccount extends BankAccount {
     @Override
     public void withdraw(double amount) {
         if (amount <= 0 || amount > balance) {
-            logger.warn("Invalid amount.");
-            return;
+            throw new BankOperationException("Invalid amount of money.");
         }
         balance -= amount;
         logger.info("Withdrawal of {} from the account number {}", amount, accountNumber);
